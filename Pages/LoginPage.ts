@@ -1,0 +1,31 @@
+import { Locator,Page } from "@playwright/test";
+
+export class LoginPage{
+    readonly page:Page;
+    readonly usernameTextBox:Locator;
+    readonly passwordTextBox:Locator;
+    readonly loginButton:Locator;
+    readonly errorMessage:Locator;
+
+    constructor(page:Page){
+        this.page=page;
+        this.usernameTextBox=page.locator('#user-name');
+        this.passwordTextBox=page.locator("#password");
+        this.loginButton=page.locator("#login-button");  
+        this.errorMessage=page.locator('[data-test="error"]')
+    }
+
+    async openApplication(){
+        await this.page.goto("https://www.saucedemo.com/");
+    }
+
+    async login(userVal:string,passwordVal:string){
+        await this.usernameTextBox.fill(userVal);
+        await this.passwordTextBox.fill(passwordVal);
+        await this.loginButton.click();
+    }
+
+    async closeApplication(){
+        await  this.page.close();
+    }
+}
