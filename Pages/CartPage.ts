@@ -18,4 +18,12 @@ export class CartPage {
     async removeItem(slug: string) {
         await this.page.locator(`[data-test="remove-${slug}"]`).click();
     }
+
+    async continueShopping(){
+        await this.continueShoppingButton.click();
+    }
+
+    async checkOut(){
+        await this.checkoutButton.click();
+    }
 }

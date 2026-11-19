@@ -1,18 +1,36 @@
-import { test, expect } from '@playwright/test';
+import { test,expect } from "../Fixtures/CustomFixture";
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe("Checkout test",{tag:['@checkout']},()=>{
+    test("Verify checkout with valid credentials",{tag:"@positive"},async({checkOutPage,page})=>{
+        await checkOutPage.fillInformation("Sunny","Baker","1234zip");
+        await checkOutPage.continueCheckOut();
+        await expect(page).toHaveURL(/checkout-step-two.html/);
+    });
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
+    test.describe("Verify checkout functionality with missing credentials",{tag:["@negative","@regression"]},()=>{
+        test("Verify checkout with missing firstname",async({page,checkOutPage})=>{
+            await checkOutPage.fillInformation("","baker","samplepostal");
+            await checkOutPage.continueCheckOut();
+            await expect(checkOutPage.errorMessage).toBeVisible();
+            await expect(checkOutPage.errorMessage).toContainText("First Name is required");
+        })
+        test("Verify checkout with missing lastname",async({page,checkOutPage})=>{
+            await checkOutPage.fillInformation("sunnny","","samplepostal");
+            await checkOutPage.continueCheckOut();
+            await expect(checkOutPage.errorMessage).toBeVisible();
+            await expect(checkOutPage.errorMessage).toContainText("Last Name is required");
+        })
+        test("Verify checkout with missing postalcode",async({page,checkOutPage})=>{
+            await checkOutPage.fillInformation("sunnny","beaker","");
+            await checkOutPage.continueCheckOut();
+            await expect(checkOutPage.errorMessage).toBeVisible();
+            await expect(checkOutPage.errorMessage).toContainText("Postal Code is required");
+        })
+    })
 
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+    test("Verify cancel checkout functionality",{tag:"@navigation"},async({checkOutPage,page})=>{
+        await checkOutPage.continueCheckOut();
+        await expect(page).toHaveURL(/cart.html/);
+    });
 
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
-
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-});
+})

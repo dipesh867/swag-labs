@@ -2,12 +2,14 @@ import {test as base, expect} from "@playwright/test";
 import { LoginPage } from "../Pages/LoginPage";
 import { InventoryPage } from "../Pages/InventoryPage";
 import { CartPage } from "../Pages/CartPage";
+import { CheckOut } from "../Pages/CheckOut";
 
 type MyFixtures={
     loginPage:LoginPage
     loggedInPage:void
     inventoryPage:InventoryPage
     cartPage:CartPage
+    checkOutPage:CheckOut
 }
 
 export const test=base.extend<MyFixtures>({
@@ -24,6 +26,12 @@ export const test=base.extend<MyFixtures>({
     },
     cartPage: async  ({page,loggedInPage},use)=>{
         await use(new CartPage(page));
+    },
+    checkOutPage:async({page,inventoryPage,cartPage},use)=>{
+        await inventoryPage.openCart();
+        await cartPage.checkOut();
+        await expect(page).toHaveURL(/checkout-step-one/);
+        await use(new CheckOut(page));
     }
 })
 

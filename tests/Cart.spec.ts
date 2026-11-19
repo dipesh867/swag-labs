@@ -41,4 +41,17 @@ test.describe("Cart", { tag: "@cart" }, () => {
     test("empty cart has no badge", { tag: ["@regression"] }, async ({ inventoryPage }) => {
         await expect(inventoryPage.cartBadge).toBeHidden();
     });
+
+    test("verify continue shopping functionality",{tag:["@regression","@navigation"]},async({inventoryPage,cartPage,page})=>{
+        await inventoryPage.openCart();
+        await cartPage.continueShopping();
+        await expect(page).toHaveURL(/inventory.html/);
+    })
+
+    test("verify checkout functionality",{tag:["@regression","@checkout"]},async({inventoryPage,cartPage,page})=>{
+        await inventoryPage.openCart();
+        await cartPage.checkOut();
+        await expect(page).toHaveURL(/checkout-step-one.html/);
+    })
+
 });
