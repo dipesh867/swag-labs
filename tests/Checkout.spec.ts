@@ -6,7 +6,6 @@ test.describe("Checkout test",{tag:['@checkout']},()=>{
         await checkOutPage.continueCheckOut();
         await expect(page).toHaveURL(/checkout-step-two.html/);
     });
-
     test.describe("Verify checkout functionality with missing credentials",{tag:["@negative","@regression"]},()=>{
         test("Verify checkout with missing firstname",async({page,checkOutPage})=>{
             await checkOutPage.fillInformation("","baker","samplepostal");
